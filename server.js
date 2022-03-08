@@ -51,7 +51,7 @@ initializePassport(passport)
 const Nexmo = require('nexmo')
 const MongoClient = require('mongodb').MongoClient;
 //const uri = "mongodb://127.0.0.1:27017/dawa2";
-const uri = "mongodb+srv://adev:adev@cluster0.nphce.mongodb.net/dawa2?retryWrites=true&w=majority";
+const uri = "mongodb+srv://adev:adev@cluster0.7yy55.mongodb.net/dawa2?retryWrites=true&w=majority";
 //const client = new MongoClient(uri, { useNewUrlParser: true });
 /*client.connect(err => {
     const collection = client.db("test").collection("devices");
