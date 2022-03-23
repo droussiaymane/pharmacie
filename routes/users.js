@@ -11,6 +11,18 @@ router.get('/edit/:id', async (req,res) => {
     }
 })
 
+router.post('/activ/:id', async (req,res) => {
+    let user = await User.findById(req.params.id)
+        user.active = true
+        
+    try{
+    user = await user.save()
+    res.redirect('/listeusers')
+    }catch(e){
+        res.redirect('/listeusers')
+    }
+})
+
 router.delete('/:id', async (req,res) => {
     try{
     await User.findByIdAndDelete(req.params.id)

@@ -12,7 +12,7 @@ exports.checkAuthenticated = async (req, res, next) =>{
 
 exports.checkNotAuthenticated = async (req, res, next) => {
     if (req.isAuthenticated()){
-        return res.redirect('/Page')
+        return res.redirect('/inter')
     }
     next()
 } 
