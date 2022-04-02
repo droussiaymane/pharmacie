@@ -36,7 +36,8 @@
     "socket.io": "^3.0.4",
     "textmagic-rest-client": "^1.0.11",
     "uuid": "^8.3.2",
-    "node-fetch": "2.6.7"
+    "node-fetch": "2.6.7",
+    "nodemailer":"^6.7.3"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",

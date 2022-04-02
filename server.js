@@ -3,6 +3,14 @@ if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
 }
 
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+  service : "outlook",
+  auth: {
+	user: process.env.mail,
+	pass: process.env.password
+  }
+});
 /*require("dotenv").config({
     path: path.join(__dirname, "./.env")
    });*/
@@ -51,8 +59,8 @@ const initializePassport = require('./passport-config')
 initializePassport(passport)
 const Nexmo = require('nexmo')
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb://127.0.0.1:27017/pharmacie";
-//const uri = "mongodb+srv://adev:adev@cluster0.7yy55.mongodb.net/dawa2?retryWrites=true&w=majority";
+//const uri = "mongodb://127.0.0.1:27017/pharmacie";
+const uri = "mongodb+srv://new_user:S53oJfV3i38n2Jki@cluster0.i52k8.mongodb.net/pharmacie?retryWrites=true&w=majority";
 //const client = new MongoClient(uri, { useNewUrlParser: true });
 /*client.connect(err => {
     const collection = client.db("test").collection("devices");
@@ -144,7 +152,7 @@ app.post('/acceuil',  async (req,res) => {
       const text = req.body.message;
       
       nexmo.message.sendSms(from, to, text); */
-      const Vonage = require('@vonage/server-sdk');
+      /*const Vonage = require('@vonage/server-sdk');
 
       const vonage = new Vonage({
         apiKey: '46d94435',
@@ -165,7 +173,24 @@ app.post('/acceuil',  async (req,res) => {
             res.render('acceuil', {alerte : `Message non envoyé avec erreur: ${responseData.messages[0]['error-text']}`})
           }
         }
-      })
+      })*/
+	  
+	  
+
+		var mailOptions = {
+		  from: process.env.mail,
+		  to: req.body.mail,
+		  subject: "De la part de l'application DAWA",
+		  text: req.body.content
+		};
+
+		transporter.sendMail(mailOptions, function(error, info){
+		  if (error) {
+			res.render('acceuil', {alerte : 'Message non envoyé avec erreur: '+ error})
+		  } else {
+			res.render('acceuil', {alerte : "Mail envoyé avec succés."})
+		  }
+		});
       
       
 })
