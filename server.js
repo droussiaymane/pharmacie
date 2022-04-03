@@ -59,8 +59,8 @@ const initializePassport = require('./passport-config')
 initializePassport(passport)
 const Nexmo = require('nexmo')
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb://127.0.0.1:27017/pharmacie";
-//const uri = "mongodb+srv://new_user:S53oJfV3i38n2Jki@cluster0.i52k8.mongodb.net/pharmacie?retryWrites=true&w=majority";
+//const uri = "mongodb://127.0.0.1:27017/pharmacie";
+const uri = "mongodb+srv://new_user:S53oJfV3i38n2Jki@cluster0.i52k8.mongodb.net/pharmacie?retryWrites=true&w=majority";
 //const client = new MongoClient(uri, { useNewUrlParser: true });
 /*client.connect(err => {
     const collection = client.db("test").collection("devices");
@@ -333,8 +333,14 @@ app.get('/liste3/:p',  f.checkNonPharmacienP, async (req,res) => {
         res.render('patients/index', { patients: patients })
     }
     else{
-        const patients = await Patient.find({ nomP: { $regex: req.params.p }  }).sort({createdAt: 'desc' })
+		console.log(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
+		let patients=await fetch(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
+		patients=await patients.json()
+		patients=patients.patients
         res.render('patients/index', { patients: patients })
+		
+        //const patients = await Patient.find({ nomP: { $regex: req.params.p }  }).sort({createdAt: 'desc' })
+        //res.render('patients/index', { patients: patients })
     }
     }catch(e){
         console.log('chargement impossible')
