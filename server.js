@@ -3,6 +3,15 @@ if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
 }
 
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+  service : "outlook",
+  auth: {
+	user: process.env.mail,
+	pass: process.env.password
+  }
+});
+ 
 /*require("dotenv").config({
     path: path.join(__dirname, "./.env")
    });*/
@@ -37,6 +46,7 @@ const ArticleRet = require('./models/articleRet.js')
 const Message = require('./models/message.js')
 const f = require('./UserRoles')
 
+const fetch=require('node-fetch');
 
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -50,8 +60,8 @@ const initializePassport = require('./passport-config')
 initializePassport(passport)
 const Nexmo = require('nexmo')
 const MongoClient = require('mongodb').MongoClient;
-//const uri = "mongodb://127.0.0.1:27017/dawa2";
-const uri = "mongodb+srv://adev:adev@cluster0.7yy55.mongodb.net/dawa2?retryWrites=true&w=majority";
+//const uri = "mongodb://127.0.0.1:27017/pharmacie";
+const uri = "mongodb+srv://new_user:S53oJfV3i38n2Jki@cluster0.i52k8.mongodb.net/pharmacie?retryWrites=true&w=majority";
 //const client = new MongoClient(uri, { useNewUrlParser: true });
 /*client.connect(err => {
     const collection = client.db("test").collection("devices");
@@ -143,11 +153,11 @@ app.post('/acceuil',  async (req,res) => {
       const text = req.body.message;
       
       nexmo.message.sendSms(from, to, text); */
-      const Vonage = require('@vonage/server-sdk');
+      /*const Vonage = require('@vonage/server-sdk');
 
       const vonage = new Vonage({
-        apiKey: '20b8c6a9',
-        apiSecret: 'q1NKf0wIp9OnFxcL'
+        apiKey: '46d94435',
+        apiSecret: 'JxUceCoo8vJ527Ni'
       })
       text = req.body.message
       number = req.body.numero
@@ -164,7 +174,23 @@ app.post('/acceuil',  async (req,res) => {
             res.render('acceuil', {alerte : `Message non envoyé avec erreur: ${responseData.messages[0]['error-text']}`})
           }
         }
-      })
+      })*/
+	  
+	  
+
+		var mailOptions = {
+		  from: "pharmacie.test9@outlook.com",
+		  to: req.body.mail,
+		  subject: "De la part de l'application DAWA",
+		  text: req.body.content
+		};
+		transporter.sendMail(mailOptions, function(error, info){
+		  if (error) {
+			res.render('acceuil', {alerte : 'Message non envoyé avec erreur: '+ error})
+		  } else {
+			res.render('acceuil', {alerte : "Mail envoyé avec succés."})
+		  }
+		});
       
       
 })
@@ -173,7 +199,7 @@ app.get('/logout',  async (req,res) => {
     res.render('articles/index2')
 })
 
-app.get('/Page', f.checkAuthenticated, async (req,res) => {
+app.get('/Page', f.checkAuthenticated, f.checkNonMedecin,f.checkNonPharmacien, f.checkNonPharmacienP, async (req,res) => {
     const users3 = await User3.find()
     if(users3[0].role == "medecin"){
         role = "Médecin"
@@ -295,16 +321,26 @@ app.post('/liste2',async (req,res) => {
         console.log('chargement impossible')
     }
 }) 
-
-app.get('/liste3/:p', f.checkAuthenticated, f.checkNonPharmacienP, async (req,res) => {
+//f.checkAuthenticated,
+app.get('/liste3/:p',  f.checkNonPharmacienP, async (req,res) => {
     try{
     if ( req.params.p == "tout" ){
-        const patients = await Patient.find().sort({createdAt: 'desc' })
+		
+        //const patients = await Patient.find().sort({createdAt: 'desc' })
+		let patients=await fetch(process.env.dpi_uri+"api/patient/getall/all_");
+		patients=await patients.json()
+		patients=patients.patients
         res.render('patients/index', { patients: patients })
     }
     else{
-        const patients = await Patient.find({ nomP: { $regex: req.params.p }  }).sort({createdAt: 'desc' })
+		//console.log(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
+		let patients=await fetch(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
+		patients=await patients.json()
+		patients=patients.patients
         res.render('patients/index', { patients: patients })
+		
+        //const patients = await Patient.find({ nomP: { $regex: req.params.p }  }).sort({createdAt: 'desc' })
+        //res.render('patients/index', { patients: patients })
     }
     }catch(e){
         console.log('chargement impossible')
@@ -682,7 +718,8 @@ app.post('/register', async (req,res) => {
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-            role: req.body.role
+            role: req.body.role,
+			active : false
         })
         user = await user.save()
         res.redirect('/')
@@ -693,11 +730,20 @@ app.post('/register', async (req,res) => {
 })
 
 app.post('/',passport.authenticate('local', {
-    successRedirect: '/Page0',
+    successRedirect: '/inter',
     failureRedirect: '/',
     failureFlash: true
 }))
 
+app.get('/inter', f.checkAuthenticated, async (req,res) => {
+    const users3 = await User3.find()
+    if(users3[0].role == "admin"){
+        res.redirect('/Page') 
+    }else{
+		res.redirect('/Page0') 
+	}
+   
+})
 app.delete('/logout', async (req,res) => {
     req.logOut()
     try{
@@ -714,8 +760,8 @@ app.delete('/logout', async (req,res) => {
 
 
 const server = app.listen(process.env.PORT || 3000, function () {
-    console.log(`Listening on port 3009`);
-    console.log(`http://localhost:3009`);
+    console.log(`Listening on port 3000`);
+    console.log(`http://localhost:3000`);
   });
 //app.listen(port);
 
@@ -754,6 +800,7 @@ app.put('/changementEMAIL', async (req,res) => {
             console.log('chargement impossible')
         }
 })
+
 
 app.get('/changementNOM', f.checkAuthenticated, async (req,res)=>{  
     res.render('changementNOM', {alerte: ''})

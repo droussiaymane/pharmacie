@@ -6,9 +6,12 @@ const User = require('./models/user.js')
 function initialize(passport){
   const authenticateUser = async (email, password, done) =>{
      const user = await User.findOne({email: email})
-     if(user == null){
+	
+     if(user == null ){
          return done(null, false, { message: 'Email incorrect'})
-     }
+     }else if(!user.active){
+		 return done(null, false, { message: 'Le compte n\'est pas activé'})
+	 }
      try{
          if(await bcrypt.compare(password, user.password)){
             let user3 = new User3({

@@ -35,37 +35,62 @@
         </ul>
       </div>
     </nav>
-      <h1 class="mb-4">Patient: <%= patient.nomP %></h1>
+      <h1 class="mb-4">Patient: <%= patient.firstName %></h1>
       <div class="text mb-2">
-      Prénom: <%= patient.prenomP %>
+      Prénom: <%= patient.lastName %>
       </div>
-      <div class="mb-2 text-success">
-        CIN du patient: <%= patient.CIN %>
+	  <div class="text mb-2">
+      Numéro de séjour: <%= patient.SojournNb %>
       </div>
-      <div class="text mb-2">
-      age: <%= patient.ageP %> et sexe: <%= patient.sexeP %>
+      <div class="mb-2 text">
+        IPP: <%= patient.IPP %>
       </div>
-      <div class="text mb-2">
-      Traitement antérieur: <%= patient.traitementAnterieur %>
-      </div>
-      <div class="text mb-2">
-      traitement en cours: <%= patient.traitementenCours %>
+      <div class="mb-2 text">
+        État civil: <%= patient.maritalStatus %>
       </div>
       <div class="text mb-2">
-      Antécédents et/ou allergie: <%= patient.Antecedents_Allergies %>
+      Date de naissance: <%= patient.birthDate!=undefined && patient.birthDate.substring(0,10) %> 
       </div>
       <div class="text mb-2">
-      Données physiologiques et biologiques: <%= patient.donnees_physio_bio %>
+      Nationalité: <%= patient.nationality %>
+      </div>
+      <div class="text mb-2">
+      Groupe sanguin: <%= patient.bloodType %>
+      </div>
+      <div class="text mb-2">
+      Covid19 vacciné: <%=patient.vaccinated==true ?"Oui" :"Non"%>
+      </div>
+      <div class="text mb-2">
+      Numéro de téléphone: <%= patient.phoneNumber %>
+      </div>
+      <div class="text mb-2">
+      Antécédents et/ou allergie: <%= patient.medicalAntecedents %>
+      </div>
+      <!--<div class="text mb-2">
+      Données physiologiques et biologiques: %= patient.donnees_physio_bio %>
       </div>
       <div class="text-muted mb-2">
-      Date de création du dossier du patient: <%= patient.createdAt.toLocaleDateString() %>
-      </div>
+      Date de création du dossier du patient: %= patient.createdAt.toLocaleDateString() %>
+      </div>-->
       <a href="/liste3/tout" class="btn btn-secondary">
         Tous les patients
-      </a>
-      <a href="/patients/edit/<%= patient.id %>" class="btn btn-info">
+      </a> 
+      <a href="/patients/edit?IPP=<%= patient.IPP!=undefined ? patient.IPP:"" %>
+	  &SojournNb=<%= patient.SojournNb!=undefined ? patient.SojournNb:"" %>
+	  &firstName=<%= patient.firstName!=undefined ? patient.firstName:"" %>
+	  &maritalStatus=<%= patient.maritalStatus!=undefined ? patient.maritalStatus:"" %>
+	  &lastName=<%= patient.lastName!=undefined ? patient.lastName:"" %>
+	  &nationality=<%= patient.nationality!=undefined ? patient.nationality:"" %>
+	  &phonecode=<%= patient.phonecode!=undefined ? patient.phonecode:"" %>
+	  &phoneNumber=<%= patient.phoneNumber!=undefined ? patient.phoneNumber:"" %>
+	  &bloodType=<%= patient.bloodType!=undefined ? patient.bloodType:"" %>
+	  &vaccinated=<%= patient.vaccinated!=undefined ? patient.vaccinated:"" %>
+	  &vaccinationDate=<%= patient.vaccinationDate!=undefined ? patient.vaccinationDate:"" %>
+	  &medicalAntecedents=<%= patient.medicalAntecedents!=undefined ? patient.medicalAntecedents:"" %>
+	  &allergyType=<%= patient.allergyType!=undefined ? patient.allergyType:"" %>" target="_blank" class="btn btn-info">
         modifier
       </a>
+	        
   </div>
 </body>
 </html>

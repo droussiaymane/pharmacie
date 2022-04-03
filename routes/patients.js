@@ -1,24 +1,32 @@
 const express = require('express')
 const router = express.Router()
 const Patient = require('./../models/patient.js')
+const fetch=require('node-fetch');
 
 router.get('/new', (req,res) => {
-    res.render('patients/new', { patient: new Patient() })
+	res.redirect(process.env.dpi_uri+"addPatient/")
+    //res.render('patients/new', { patient: new Patient() })
 })
-
-router.get('/edit/:id', async (req,res) => {
-    try{
+           
+router.get('/edit', async (req,res) => {
+	
+	res.redirect(process.env.dpi_uri+"addPatient?"+req._parsedUrl.query)
+    /*try{
     const patient = await Patient.findById(req.params.id)
     res.render('patients/edit', { patient: patient })
     }catch(e){
      res.redirect('/liste3/tout')   
-    }
+    }*/
 })
 
 router.get('/:id', async (req,res) => {
     try{
-    const patient = await Patient.findById(req.params.id)
-    res.render('patients/show', { patient: patient })
+	let patients=await fetch(process.env.dpi_uri+"api/patient/get/"+req.params.id);
+	
+	patients=await patients.json()
+	
+	patients=patients.patients
+    res.render('patients/show', { patient: patients })
     }catch(e){
         res.redirect('/liste3/tout') //if (article == null) 
     }
@@ -46,7 +54,8 @@ router.post('/', async (req,res) => {
 
 router.delete('/:id', async (req,res) => {
     try{
-    await Patient.findByIdAndDelete(req.params.id)
+    
+    await fetch(process.env.dpi_uri+"api/patient/delete/"+req.params.id,{ method: "Delete" })
     res.redirect('/liste3/tout')
     }catch(e){
     res.redirect('/liste3/tout')
