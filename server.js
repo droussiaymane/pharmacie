@@ -11,6 +11,7 @@ var transporter = nodemailer.createTransport({
 	pass: process.env.password
   }
 });
+ 
 /*require("dotenv").config({
     path: path.join(__dirname, "./.env")
    });*/
@@ -178,12 +179,11 @@ app.post('/acceuil',  async (req,res) => {
 	  
 
 		var mailOptions = {
-		  from: process.env.mail,
+		  from: "pharmacie.test9@outlook.com",
 		  to: req.body.mail,
 		  subject: "De la part de l'application DAWA",
 		  text: req.body.content
 		};
-
 		transporter.sendMail(mailOptions, function(error, info){
 		  if (error) {
 			res.render('acceuil', {alerte : 'Message non envoyé avec erreur: '+ error})
@@ -333,7 +333,7 @@ app.get('/liste3/:p',  f.checkNonPharmacienP, async (req,res) => {
         res.render('patients/index', { patients: patients })
     }
     else{
-		console.log(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
+		//console.log(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
 		let patients=await fetch(process.env.dpi_uri+"api/patient/getall/allforsearch/"+req.params.p);
 		patients=await patients.json()
 		patients=patients.patients
