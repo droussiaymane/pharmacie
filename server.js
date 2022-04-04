@@ -60,8 +60,8 @@ const initializePassport = require('./passport-config')
 initializePassport(passport)
 const Nexmo = require('nexmo')
 const MongoClient = require('mongodb').MongoClient;
-//const uri = "mongodb://127.0.0.1:27017/pharmacie";
-const uri = "mongodb+srv://new_user:S53oJfV3i38n2Jki@cluster0.i52k8.mongodb.net/pharmacie?retryWrites=true&w=majority";
+const uri = "mongodb://127.0.0.1:27017/dawa2";
+//const uri = "mongodb+srv://new_user:S53oJfV3i38n2Jki@cluster0.i52k8.mongodb.net/pharmacie?retryWrites=true&w=majority";
 //const client = new MongoClient(uri, { useNewUrlParser: true });
 /*client.connect(err => {
     const collection = client.db("test").collection("devices");
@@ -759,9 +759,9 @@ app.delete('/logout', async (req,res) => {
 
 
 
-const server = app.listen(process.env.PORT || 3000, function () {
-    console.log(`Listening on port 3000`);
-    console.log(`http://localhost:3000`);
+const server = app.listen(process.env.PORT || 3009, function () {
+    console.log(`Listening on port 3009`);
+    console.log(`http://localhost:3009`);
   });
 //app.listen(port);
 
